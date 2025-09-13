@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   scraper:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.cloud
     container_name: driving_school_scraper
     restart: unless-stopped
     environment:
