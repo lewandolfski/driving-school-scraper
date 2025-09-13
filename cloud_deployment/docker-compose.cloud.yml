@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  scraper:
+    build: .
+    container_name: driving_school_scraper
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql://scraper_user:${DB_PASSWORD}@db:5432/driving_schools
+      - SCRAPER_MODE=production
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    depends_on:
+      - db
+    command: python full_scrape_production.py
+
+  db:
+    image: postgres:15
+    container_name: driving_schools_db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=driving_schools
+      - POSTGRES_USER=scraper_user
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  api:
+    build: ./api
+    container_name: driving_schools_api
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql://scraper_user:${DB_PASSWORD}@db:5432/driving_schools
+      - API_KEY=${API_KEY}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:

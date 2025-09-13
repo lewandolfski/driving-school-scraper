@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dutch Driving Schools Database</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #4facfe;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .controls {
+            padding: 30px;
+            background: white;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 50px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-box:focus {
+            border-color: #4facfe;
+        }
+        
+        .schools-grid {
+            padding: 30px;
+            background: white;
+        }
+        
+        .school-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4facfe;
+            transition: all 0.3s ease;
+        }
+        
+        .school-card:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .school-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .school-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+        }
+        
+        .info-icon {
+            font-size: 1.1em;
+        }
+        
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .stars {
+            color: #ffc107;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 30px;
+            background: white;
+        }
+        
+        .page-btn {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            background: white;
+            color: #666;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .page-btn:hover, .page-btn.active {
+            background: #4facfe;
+            color: white;
+            border-color: #4facfe;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+            font-size: 1.2em;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+            font-size: 1.1em;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+                padding: 20px;
+            }
+            
+            .school-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 Dutch Driving Schools</h1>
+            <p>Complete database of driving schools across the Netherlands</p>
+        </div>
+        
+        <div class="stats-grid" id="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="total-schools">-</div>
+                <div class="stat-label">Total Schools</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-cities">-</div>
+                <div class="stat-label">Cities</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="phone-percentage">-</div>
+                <div class="stat-label">With Phone</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="rating-percentage">-</div>
+                <div class="stat-label">With Ratings</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <input type="text" class="search-box" id="search" placeholder="🔍 Search schools by name, city, or address...">
+        </div>
+        
+        <div class="schools-grid">
+            <div id="loading" class="loading">Loading driving schools...</div>
+            <div id="schools-container"></div>
+            <div id="pagination" class="pagination"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let currentSearch = '';
+        
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/stats');
+                const stats = await response.json();
+                
+                document.getElementById('total-schools').textContent = stats.total_schools.toLocaleString();
+                document.getElementById('total-cities').textContent = stats.unique_cities.toLocaleString();
+                document.getElementById('phone-percentage').textContent = stats.phone_percentage + '%';
+                document.getElementById('rating-percentage').textContent = stats.rating_percentage + '%';
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+        
+        async function loadSchools(page = 1, search = '') {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('schools-container').innerHTML = '';
+            document.getElementById('pagination').innerHTML = '';
+            
+            try {
+                const response = await fetch(`/api/schools?page=${page}&search=${encodeURIComponent(search)}`);
+                const data = await response.json();
+                
+                document.getElementById('loading').style.display = 'none';
+                
+                if (data.schools.length === 0) {
+                    document.getElementById('schools-container').innerHTML = 
+                        '<div class="no-data">No schools found matching your search.</div>';
+                    return;
+                }
+                
+                const container = document.getElementById('schools-container');
+                container.innerHTML = data.schools.map(school => `
+                    <div class="school-card">
+                        <div class="school-name">${school.name}</div>
+                        <div class="school-info">
+                            <div class="info-item">
+                                <span class="info-icon">📍</span>
+                                <span>${school.address || school.city || 'N/A'}</span>
+                            </div>
+                            ${school.phone ? `
+                                <div class="info-item">
+                                    <span class="info-icon">📞</span>
+                                    <span>${school.phone}</span>
+                                </div>
+                            ` : ''}
+                            ${school.email ? `
+                                <div class="info-item">
+                                    <span class="info-icon">📧</span>
+                                    <span>${school.email}</span>
+                                </div>
+                            ` : ''}
+                            ${school.rating ? `
+                                <div class="info-item rating">
+                                    <span class="info-icon stars">⭐</span>
+                                    <span>${school.rating}/5 (${school.review_count || 0} reviews)</span>
+                                </div>
+                            ` : ''}
+                            ${school.success_rate ? `
+                                <div class="info-item">
+                                    <span class="info-icon">🎯</span>
+                                    <span>${school.success_rate}% success rate</span>
+                                </div>
+                            ` : ''}
+                            ${school.website ? `
+                                <div class="info-item">
+                                    <span class="info-icon">🌐</span>
+                                    <a href="${school.website}" target="_blank" style="color: #4facfe;">Visit Website</a>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Create pagination
+                if (data.total_pages > 1) {
+                    const pagination = document.getElementById('pagination');
+                    let paginationHTML = '';
+                    
+                    if (page > 1) {
+                        paginationHTML += `<button class="page-btn" onclick="loadSchools(${page - 1}, '${search}')">Previous</button>`;
+                    }
+                    
+                    for (let i = Math.max(1, page - 2); i <= Math.min(data.total_pages, page + 2); i++) {
+                        paginationHTML += `<button class="page-btn ${i === page ? 'active' : ''}" onclick="loadSchools(${i}, '${search}')">${i}</button>`;
+                    }
+                    
+                    if (page < data.total_pages) {
+                        paginationHTML += `<button class="page-btn" onclick="loadSchools(${page + 1}, '${search}')">Next</button>`;
+                    }
+                    
+                    pagination.innerHTML = paginationHTML;
+                }
+                
+                currentPage = page;
+                currentSearch = search;
+                
+            } catch (error) {
+                console.error('Error loading schools:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('schools-container').innerHTML = 
+                    '<div class="no-data">Error loading schools. Please try again.</div>';
+            }
+        }
+        
+        // Search functionality
+        let searchTimeout;
+        document.getElementById('search').addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                loadSchools(1, e.target.value);
+            }, 500);
+        });
+        
+        // Initial load
+        loadStats();
+        loadSchools();
+    </script>
+</body>
+</html>

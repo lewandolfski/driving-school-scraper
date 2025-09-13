@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: driving_schools_db
+    environment:
+      MYSQL_ROOT_PASSWORD: driving_schools_2024
+      MYSQL_DATABASE: driving_schools
+      MYSQL_USER: scraper_user
+      MYSQL_PASSWORD: scraper_pass_2024
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  scraper:
+    build: .
+    container_name: driving_schools_scraper
+    depends_on:
+      - mariadb
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_NAME=driving_schools
+      - DB_USER=scraper_user
+      - DB_PASSWORD=scraper_pass_2024
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    restart: "no"
+    profiles:
+      - scraper
+
+volumes:
+  mariadb_data:
