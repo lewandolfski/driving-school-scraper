@@ -10,11 +10,11 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy requirements and install Python dependencies
-COPY ../requirements-cloud.txt .
+COPY requirements-cloud.txt .
 RUN pip install --no-cache-dir -r requirements-cloud.txt
 
 # Copy API code
-COPY . .
+COPY api/ .
 
 # Create necessary directories
 RUN mkdir -p logs

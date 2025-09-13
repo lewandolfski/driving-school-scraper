@@ -33,7 +33,9 @@ services:
       - "5432:5432"
 
   api:
-    build: ./api
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
     container_name: driving_schools_api
     restart: unless-stopped
     environment:
