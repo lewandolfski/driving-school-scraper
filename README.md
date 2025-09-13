@@ -1,52 +1,62 @@
 # Driving School Scraper
 
-A modular web scraping system for collecting driving school data from various sources.
+A comprehensive web scraping system for collecting and analyzing driving school data from rijlessen.nl and other sources.
+## Features
 
-## Features
-
-- **Modular Architecture**: Easily add new scrapers for different data sources
+- **Complete Data Collection**: Scrape detailed information including contact details, ratings, and success rates
+- **Cloud-Ready**: Deploy to GCP, AWS, or DigitalOcean with Docker
+- **Web Viewer**: Built-in web interface for data visualization
+- **REST API**: JSON API for integration with other applications
+- **Modular Architecture**: Easily extensible for new data sources
 - **Data Validation**: Clean and validate scraped data
-- **Flexible Storage**: Save results to JSON files
 - **Asynchronous**: Built with asyncio for efficient scraping
-- **Logging**: Comprehensive logging for monitoring and debugging
 
 ## Project Structure
 
 ```
 driving-school-scraper/
-├── data/                   # Output directory for scraped data
-├── logs/                   # Log files
-├── scraper/                # Scraper modules
+├── cloud_deployment/      # Docker and cloud deployment files
+├── database/              # Database models and migrations
+├── scraper/              # Scraper modules
 │   ├── __init__.py
-│   ├── base_scraper.py     # Base scraper class
-│   └── example_scraper.py  # Example scraper implementation
-├── .env.example           # Example environment variables
-├── main.py                # Main orchestration script
-├── README.md              # This file
-└── requirements.txt       # Python dependencies
+│   ├── base_scraper.py   # Base scraper class
+│   └── rijlessen_nl_scraper.py  # Rijlessen.nl scraper
+├── web_viewer/           # Web interface and API
+├── .env.example          # Example environment variables
+├── docker-compose.yml    # Local development
+├── requirements.txt      # Python dependencies
+└── README.md            # This file
 ```
 
-## Getting Started
+## Quick Start
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/lewandolfski/driving-school-scraper.git
    cd driving-school-scraper
    ```
 
-2. **Set up a virtual environment** (recommended)
+2. **Set up environment**
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies**
-   ```bash
+   # Copy and configure environment variables
+   cp .env.example .env
+   
+   # Install dependencies
    pip install -r requirements.txt
    ```
 
-4. **Configure environment variables**
-   Copy `.env.example` to `.env` and update the values as needed.
+3. **Run the scraper locally**
+   ```bash
+   python main.py
+   ```
+
+## Deployment
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions on deploying to:
+- Google Cloud Platform (GCP)
+- AWS
+- DigitalOcean
+- Local development with Docker
 
 5. **Run the scraper**
    ```bash
@@ -80,3 +90,6 @@ LOG_LEVEL=INFO
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+=======
+# driving-school-scraper
+>>>>>>> c389d5dacda88709a8bb5d837bcbdc0f3d9f8890
