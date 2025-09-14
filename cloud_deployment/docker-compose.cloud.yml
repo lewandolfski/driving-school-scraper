@@ -29,8 +29,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "5432:5432"
+    # Removed public port exposure for security - database only accessible within Docker network
 
   api:
     build:
@@ -55,7 +54,7 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=${DB_PASSWORD}
       - PGADMIN_CONFIG_SERVER_MODE=False
     ports:
-      - "8080:80"
+      - "127.0.0.1:8080:80"  # Only accessible from localhost for security
     depends_on:
       - db
     volumes:
