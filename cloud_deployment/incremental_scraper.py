@@ -6,7 +6,6 @@ import sys
 from pathlib import Path
 from datetime import datetime
 from loguru import logger
-import psycopg2
 from sqlalchemy import create_engine, text
 
 # Import our scraper components
