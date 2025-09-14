@@ -4,19 +4,22 @@ services:
   scraper:
     build:
       context: ..
-      dockerfile: cloud_deployment/Dockerfile.cloud
+      dockerfile: Dockerfile
     container_name: driving_school_scraper
     restart: unless-stopped
     environment:
-      - DATABASE_URL=postgresql://scraper_user:${DB_PASSWORD}@db:5432/driving_schools
-      - SCRAPER_MODE=production
-      - LOG_LEVEL=INFO
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=driving_schools
+      - DB_USER=scraper_user
+      - DB_PASSWORD=${DB_PASSWORD}
+      - API_KEY=${API_KEY}
     volumes:
-      - ./data:/app/data
-      - ./logs:/app/logs
+      - ../data:/app/data
+      - ../logs:/app/logs
     depends_on:
       - db
-    command: python cloud_deployment/full_scrape_production.py
+    command: ["python", "cloud_deployment/incremental_scraper.py"]
 
   db:
     image: postgres:15
