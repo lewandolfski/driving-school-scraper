@@ -16,7 +16,7 @@ services:
       - ./logs:/app/logs
     depends_on:
       - db
-    command: python full_scrape_production.py
+    command: python cloud_deployment/full_scrape_production.py
 
   db:
     image: postgres:15
