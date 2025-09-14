@@ -41,7 +41,7 @@ class DatabaseManager:
         
     def _get_database_url(self):
         """Construct database URL from environment variables."""
-        db_host = os.getenv('DB_HOST', 'driving_schools_db')
+        db_host = os.getenv('DB_HOST', 'db')
         db_port = os.getenv('DB_PORT', '5432')
         db_name = os.getenv('DB_NAME', 'driving_schools')
         db_user = os.getenv('DB_USER', 'scraper_user')
