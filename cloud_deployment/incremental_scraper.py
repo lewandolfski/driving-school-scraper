@@ -95,8 +95,8 @@ class IncrementalScraper:
         insert_sql = """
         INSERT INTO driving_schools 
         (name, url, address, city, phone, email, website, rating, review_count, success_rate, source, scraped_at)
-        VALUES (%(name)s, %(url)s, %(address)s, %(city)s, %(phone)s, %(email)s, %(website)s, 
-                %(rating)s, %(review_count)s, %(success_rate)s, %(source)s, %(scraped_at)s)
+        VALUES (:name, :url, :address, :city, :phone, :email, :website, 
+                :rating, :review_count, :success_rate, :source, :scraped_at)
         ON CONFLICT (name, address) DO UPDATE SET
             phone = EXCLUDED.phone,
             email = EXCLUDED.email,
@@ -109,7 +109,7 @@ class IncrementalScraper:
         
         progress_sql = """
         INSERT INTO scrape_progress (city_url, city_index, total_cities, schools_found)
-        VALUES (%(city_url)s, %(city_index)s, %(total_cities)s, %(schools_found)s)
+        VALUES (:city_url, :city_index, :total_cities, :schools_found)
         ON CONFLICT (city_url) DO UPDATE SET
             schools_found = EXCLUDED.schools_found,
             completed_at = CURRENT_TIMESTAMP
