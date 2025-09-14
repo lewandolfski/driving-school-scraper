@@ -46,6 +46,21 @@ services:
     depends_on:
       - db
 
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin_web
+    restart: unless-stopped
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@example.com
+      - PGADMIN_DEFAULT_PASSWORD=${DB_PASSWORD}
+      - PGADMIN_CONFIG_SERVER_MODE=False
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
 # nginx:
 #   image: nginx:alpine
 #   container_name: nginx_proxy
@@ -61,3 +76,4 @@ services:
 
 volumes:
   postgres_data:
+  pgadmin_data:
