@@ -4,7 +4,7 @@ services:
   scraper:
     build:
       context: ..
-      dockerfile: Dockerfile
+      dockerfile: cloud_deployment/Dockerfile.cloud
     container_name: driving_school_scraper
     restart: unless-stopped
     environment:
